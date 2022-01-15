@@ -61,10 +61,22 @@ var (
 	byzantiumInstructionSet        = newByzantiumInstructionSet()
 	constantinopleInstructionSet   = newConstantinopleInstructionSet()
 	istanbulInstructionSet         = newIstanbulInstructionSet()
+	berlinInstructionSet           = newBerlinInstructionSet()
 )
 
 // JumpTable contains the EVM opcodes supported at a given fork.
 type JumpTable [256]operation
+
+// newBerlinInstructionSet returns the frontier, homestead, byzantium,
+// contantinople, istanbul, petersburg and berlin instructions.
+func newBerlinInstructionSet() JumpTable {
+	instructionSet := newIstanbulInstructionSet()
+	enable2929(&instructionSet) // Access lists for trie accesses https://eips.ethereum.org/EIPS/eip-2929
+	// TODO: this technically isn't part of Berlin but we should turn it
+	// on to prevent gas token from being used on Optimism
+	enable3529(&instructionSet)
+	return instructionSet
+}
 
 // newIstanbulInstructionSet returns the frontier, homestead
 // byzantium, contantinople and petersburg instructions.
